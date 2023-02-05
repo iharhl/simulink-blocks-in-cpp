@@ -8,7 +8,6 @@
 
 namespace SimuBlocks
 {
-
 // Step
 template <typename T>
 const std::vector<T> Step(const unsigned NumOfSamples, const T InitValue, const T FinalValue, const unsigned StepSample);

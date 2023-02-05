@@ -45,3 +45,8 @@ const std::vector<int> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, c
 
     return vec;
 }
+
+// Explicit instantiation of template
+template const std::vector<int> SimuBlocks::Step(const unsigned NumOfSamples, const int InitValue, const int FinalValue, const unsigned StepSample);
+template const std::vector<float> SimuBlocks::Step(const unsigned NumOfSamples, const float InitValue, const float FinalValue, const unsigned StepSample);
+template const std::vector<unsigned> SimuBlocks::Step(const unsigned NumOfSamples, const unsigned InitValue, const unsigned FinalValue, const unsigned StepSample);

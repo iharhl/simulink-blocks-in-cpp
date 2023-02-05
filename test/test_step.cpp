@@ -5,10 +5,10 @@
 TEST(TestStep, DummyTest1)
 {
     // arange
-    int num_of_samples = 10;
+    unsigned num_of_samples = 10;
     int init_value = 0;
     int final_value = 2;
-    int step_sample = 4;
+    unsigned step_sample = 4;
     std::vector<int> expected_vec = {0,0,0,0,2,2,2,2,2,2};
 
     // act
