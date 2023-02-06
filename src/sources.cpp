@@ -1,12 +1,27 @@
 #include "sources.h"
 
+
+template <typename T>
+const std::vector<T> SimuBlocks::Constant(const unsigned NumOfSamples, const T ConstValue)
+{
+    std::vector<T> vec (NumOfSamples, ConstValue);
+    return vec;
+} 
+
 template <typename T>
 const std::vector<T> SimuBlocks::Step(const unsigned NumOfSamples, const T InitValue, const T FinalValue, const unsigned StepSample)
 {
-
+    // safety checks
+    if (!NumOfSamples)
+        throw std::invalid_argument("Number of samples must be > 0");
+    if (StepSample > NumOfSamples)
+        throw std::invalid_argument("Sample at which step is happening is > number of samples");
+    
+    // initialize vector
     std::vector<T> vec (NumOfSamples, InitValue);
 
-    for (int i = StepSample; i < NumOfSamples; ++i)
+    // fill in the vector
+    for (int i = StepSample-1; i < NumOfSamples; ++i)
     {
         vec[i] = FinalValue;
     }
@@ -14,15 +29,17 @@ const std::vector<T> SimuBlocks::Step(const unsigned NumOfSamples, const T InitV
     return vec;
 }
 
-
-const std::vector<int> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const int Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay)
+template <typename T>
+const std::vector<T> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const T Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay)
 {
     // safety checks 
     if (!NumOfSamples || !Period || !DutyCycle) 
         throw std::invalid_argument("Number of samples, period and duty cycle parameters must be > 0");
+    if (PhaseDelay > NumOfSamples)
+        throw std::invalid_argument("Phase delay is > number of samples");
 
     // initialize vector
-    std::vector<int> vec (NumOfSamples, 0);
+    std::vector<T> vec (NumOfSamples, 0);
 
     // calculate the pulse width
     const unsigned m_PulseWidth = (Period * DutyCycle) / 100;
@@ -46,7 +63,55 @@ const std::vector<int> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, c
     return vec;
 }
 
+template <typename T>
+const std::vector<T> SimuBlocks::Ramp(const unsigned NumOfSamples, const float Slope, const unsigned StartRampSample, const T InitialOutput)
+{
+    // safety checks 
+    if (!NumOfSamples || !StartRampSample) 
+        throw std::invalid_argument("Number of samples and start ramp must be > 0");
+    if (StartRampSample > NumOfSamples)
+        throw std::invalid_argument("The sample at which slope begins is > number of samples");
+
+    // initialize vector
+    std::vector<T> vec (NumOfSamples, InitialOutput);
+
+    // slope -> difference between consecutive samples
+    T m_Diff = static_cast<T>(Slope);
+
+    // fill in the vector
+    for (int i = StartRampSample-1; i < NumOfSamples; ++i)
+    {
+        if (!i)
+            vec[i] = InitialOutput;
+        else
+            vec[i] = vec[i-1] + m_Diff;
+    }
+
+    return vec;
+
+}
+
 // Explicit instantiation of template
+
 template const std::vector<int> SimuBlocks::Step(const unsigned NumOfSamples, const int InitValue, const int FinalValue, const unsigned StepSample);
 template const std::vector<float> SimuBlocks::Step(const unsigned NumOfSamples, const float InitValue, const float FinalValue, const unsigned StepSample);
 template const std::vector<unsigned> SimuBlocks::Step(const unsigned NumOfSamples, const unsigned InitValue, const unsigned FinalValue, const unsigned StepSample);
+template const std::vector<size_t> SimuBlocks::Step(const unsigned NumOfSamples, const size_t InitValue, const size_t FinalValue, const unsigned StepSample);
+template const std::vector<std::uint8_t> SimuBlocks::Step(const unsigned NumOfSamples, const std::uint8_t InitValue, const std::uint8_t FinalValue, const unsigned StepSample);
+template const std::vector<std::uint16_t> SimuBlocks::Step(const unsigned NumOfSamples, const std::uint16_t InitValue, const std::uint16_t FinalValue, const unsigned StepSample);
+template const std::vector<std::int8_t> SimuBlocks::Step(const unsigned NumOfSamples, const std::int8_t InitValue, const std::int8_t FinalValue, const unsigned StepSample);
+template const std::vector<std::int16_t> SimuBlocks::Step(const unsigned NumOfSamples, const std::int16_t InitValue, const std::int16_t FinalValue, const unsigned StepSample);
+
+template const std::vector<int> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const int Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
+template const std::vector<float> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const float Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
+template const std::vector<unsigned> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const unsigned Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
+template const std::vector<size_t> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const size_t Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
+template const std::vector<std::uint8_t> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const std::uint8_t Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
+template const std::vector<std::uint16_t> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const std::uint16_t Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
+template const std::vector<std::int8_t> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const std::int8_t Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
+template const std::vector<std::int16_t> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const std::int16_t Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
+
+template const std::vector<int> SimuBlocks::Ramp(const unsigned NumOfSamples, const float Slope, const unsigned StartRampSample, const int InitialOutput);
+template const std::vector<float> SimuBlocks::Ramp(const unsigned NumOfSamples, const float Slope, const unsigned StartRampSample, const float InitialOutput);
+
+template const std::vector<int> SimuBlocks::Constant(const unsigned NumOfSamples, const int ConstValue);
