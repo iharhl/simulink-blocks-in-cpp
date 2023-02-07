@@ -2,7 +2,7 @@
 #define SOURCES_H_
 
 #include <iostream>
-#include <array>
+#include <cmath>
 #include <vector>
 #include <memory>
 
@@ -24,6 +24,10 @@ const std::vector<T> PulseGenerator(const unsigned NumOfSamples, const T Amplitu
 // Ramp
 template <typename T>
 const std::vector<T> Ramp(const unsigned NumOfSamples, const float Slope, const unsigned StartRampSample, const T InitialOutput);
+
+template <typename T>
+const std::vector<T> SineWave(const unsigned NumOfSamples, const T Amplitude, const unsigned SamplesPerPeriod, const unsigned PhaseDelay = 0, const T Bias = static_cast<T>(0));
+
 }
 
 #endif

@@ -19,7 +19,6 @@ TEST(StepBlockOutput, TypeInteger)
     {
         ASSERT_EQ(expected_vec[i], returned_vec[i]);
     }
-
 }
 
 TEST(StepBlockOutput, TypeFloat)
@@ -39,7 +38,6 @@ TEST(StepBlockOutput, TypeFloat)
     {
         ASSERT_FLOAT_EQ(expected_vec[i], returned_vec[i]);
     }
-
 }
 
 TEST(StepBlockOutput, TypeSizet)
@@ -59,7 +57,6 @@ TEST(StepBlockOutput, TypeSizet)
     {
         ASSERT_EQ(expected_vec[i], returned_vec[i]);
     }
-
 }
 
 TEST(StepBlockOutput, TypeUint8)
@@ -79,7 +76,6 @@ TEST(StepBlockOutput, TypeUint8)
     {
         ASSERT_EQ(expected_vec[i], returned_vec[i]);
     }
-
 }
 
 TEST(PulseGeneratorBlockOutput, TypeInt)
@@ -99,7 +95,6 @@ TEST(PulseGeneratorBlockOutput, TypeInt)
     {
         ASSERT_EQ(expected_vec[i], returned_vec[i]);
     }    
-
 }
 
 TEST(PulseGeneratorBlockOutput, TypeFloat)
@@ -120,7 +115,6 @@ TEST(PulseGeneratorBlockOutput, TypeFloat)
     {
         ASSERT_FLOAT_EQ(expected_vec[i], returned_vec[i]);
     }    
-
 }
 
 TEST(RampBlockOutput, TypeInt)
@@ -140,7 +134,6 @@ TEST(RampBlockOutput, TypeInt)
     {
         ASSERT_EQ(expected_vec[i], returned_vec[i]);
     }    
-
 }
 
 TEST(RampBlockOutput, TypeFloat)
@@ -160,7 +153,6 @@ TEST(RampBlockOutput, TypeFloat)
     {
         ASSERT_FLOAT_EQ(expected_vec[i], returned_vec[i]);
     }    
-
 }
 
 TEST(ConstantBlockOutput, TypeInt)
@@ -178,8 +170,46 @@ TEST(ConstantBlockOutput, TypeInt)
     {
         ASSERT_EQ(expected_vec[i], returned_vec[i]);
     }    
-
 }
+
+TEST(ConstantBlockOutput, TypeFloat)
+{
+    // arange
+    unsigned num_of_samples = 3;
+    float const_value = 34.43f;
+    std::vector<float> expected_vec = {34.43f,34.43f,34.43f};
+
+    // act
+    std::vector<float> returned_vec = SimuBlocks::Constant(num_of_samples, const_value);
+
+    // compare
+    for (int i = 0; i < num_of_samples; ++i)
+    {
+        ASSERT_EQ(expected_vec[i], returned_vec[i]);
+    }    
+}
+
+TEST(SineWaveBlockOutput, TypeFloat)
+{
+    // arange
+    unsigned num_of_samples = 15;
+    float amplitude = 2.1f;
+    unsigned samples_per_period = 12;
+    std::vector<float> expected_vec = {0.f,1.13534f,1.91022f,2.07862f,1.58707f,0.59163f,-0.59163f,-1.58707f,-2.07862f,-1.91022f,-1.13534f,0.f,1.13534f,1.91022f,2.07862f};
+
+    // act
+    std::vector<float> returned_vec = SimuBlocks::SineWave(num_of_samples, amplitude, samples_per_period);
+
+    // compare
+    for (int i = 0; i < num_of_samples; ++i)
+    {
+        // truncates the value to 5 gidits
+        float returned_trunc = static_cast<float>(static_cast<int>(returned_vec[i] * 100000.0f)) / 100000.0f;
+        // assert
+        ASSERT_FLOAT_EQ(expected_vec[i], returned_trunc);
+    } 
+}
+
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
