@@ -5,6 +5,7 @@
 #include <cmath>
 #include <vector>
 #include <memory>
+#include <random>
 
 namespace SimuBlocks
 {
@@ -12,6 +13,10 @@ namespace SimuBlocks
 // Constant
 template <typename T>
 const std::vector<T> Constant(const unsigned NumOfSamples, const T ConstValue);
+
+// Random Number
+template <typename T>
+const std::vector<T> RandomNumber(const unsigned NumOfSamples, const T MinLimit = static_cast<T>(0), const T MaxLimit = static_cast<T>(1));
 
 // Step
 template <typename T>

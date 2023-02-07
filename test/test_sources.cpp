@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include <vector>
 #include "sources.h"
+#include <iostream>
 
 TEST(StepBlockOutput, TypeInteger)
 {
@@ -203,11 +204,26 @@ TEST(SineWaveBlockOutput, TypeFloat)
     // compare
     for (int i = 0; i < num_of_samples; ++i)
     {
-        // truncates the value to 5 gidits
-        float returned_trunc = static_cast<float>(static_cast<int>(returned_vec[i] * 100000.0f)) / 100000.0f;
-        // assert
-        ASSERT_FLOAT_EQ(expected_vec[i], returned_trunc);
+        ASSERT_NEAR(expected_vec[i], returned_vec[i], 0.00002);
     } 
+}
+
+TEST(RandomNumberBlockOutput, TypeFloat)
+{
+    // arange
+    unsigned num_of_samples = 6;
+    float min_limit = 0;
+    float max_limit = 2;
+
+    // act
+    std::vector<float> returned_vec = SimuBlocks::RandomNumber(num_of_samples, min_limit, max_limit);
+
+    // compare
+    for (int i = 0; i < num_of_samples; ++i)
+    {
+        ASSERT_LE(returned_vec[i], max_limit);
+        ASSERT_GE(returned_vec[i], min_limit);
+    }
 }
 
 

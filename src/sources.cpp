@@ -15,6 +15,30 @@ const std::vector<T> SimuBlocks::Constant(const unsigned NumOfSamples, const T C
 } 
 
 template <typename T>
+const std::vector<T> SimuBlocks::RandomNumber(const unsigned NumOfSamples, const T MinLimit, const T MaxLimit)
+{
+    // safety checks
+    if (!NumOfSamples)
+        throw std::invalid_argument("Number of samples must be > 0");
+    
+    // random uniform generator
+    std::random_device rd;  // Will be used to obtain a seed for the random number engine
+    std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
+    std::uniform_real_distribution<> distrib(static_cast<double>(MinLimit), static_cast<double>(MaxLimit));
+
+    // initialize vector
+    std::vector<T> vec (NumOfSamples);
+
+    // fill in the vector
+    for (int i = 0; i < NumOfSamples; ++i)
+    {
+        vec[i] = static_cast<T>(distrib(gen));
+    }
+
+    return vec;
+} 
+
+template <typename T>
 const std::vector<T> SimuBlocks::Step(const unsigned NumOfSamples, const T InitValue, const T FinalValue, const unsigned StepSample)
 {
     // safety checks
@@ -118,6 +142,8 @@ const std::vector<T> SimuBlocks::SineWave(const unsigned NumOfSamples, const T A
     return vec;
 }
 
+
+
 // Explicit instantiation of template
 
 template const std::vector<int> SimuBlocks::Step(const unsigned NumOfSamples, const int InitValue, const int FinalValue, const unsigned StepSample);
@@ -125,31 +151,27 @@ template const std::vector<float> SimuBlocks::Step(const unsigned NumOfSamples, 
 template const std::vector<size_t> SimuBlocks::Step(const unsigned NumOfSamples, const size_t InitValue, const size_t FinalValue, const unsigned StepSample);
 template const std::vector<std::uint8_t> SimuBlocks::Step(const unsigned NumOfSamples, const std::uint8_t InitValue, const std::uint8_t FinalValue, const unsigned StepSample);
 template const std::vector<std::uint16_t> SimuBlocks::Step(const unsigned NumOfSamples, const std::uint16_t InitValue, const std::uint16_t FinalValue, const unsigned StepSample);
-template const std::vector<std::int8_t> SimuBlocks::Step(const unsigned NumOfSamples, const std::int8_t InitValue, const std::int8_t FinalValue, const unsigned StepSample);
-template const std::vector<std::int16_t> SimuBlocks::Step(const unsigned NumOfSamples, const std::int16_t InitValue, const std::int16_t FinalValue, const unsigned StepSample);
 
 template const std::vector<int> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const int Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
 template const std::vector<float> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const float Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
 template const std::vector<size_t> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const size_t Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
 template const std::vector<std::uint8_t> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const std::uint8_t Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
 template const std::vector<std::uint16_t> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const std::uint16_t Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
-template const std::vector<std::int8_t> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const std::int8_t Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
-template const std::vector<std::int16_t> SimuBlocks::PulseGenerator(const unsigned NumOfSamples, const std::int16_t Amplitude, const unsigned Period, const unsigned DutyCycle, const unsigned PhaseDelay);
 
 template const std::vector<int> SimuBlocks::Ramp(const unsigned NumOfSamples, const float Slope, const unsigned StartRampSample, const int InitialOutput);
 template const std::vector<float> SimuBlocks::Ramp(const unsigned NumOfSamples, const float Slope, const unsigned StartRampSample, const float InitialOutput);
 template const std::vector<size_t> SimuBlocks::Ramp(const unsigned NumOfSamples, const float Slope, const unsigned StartRampSample, const size_t InitialOutput);
 template const std::vector<std::uint8_t> SimuBlocks::Ramp(const unsigned NumOfSamples, const float Slope, const unsigned StartRampSample, const std::uint8_t InitialOutput);
 template const std::vector<std::uint16_t> SimuBlocks::Ramp(const unsigned NumOfSamples, const float Slope, const unsigned StartRampSample, const std::uint16_t InitialOutput);
-template const std::vector<std::int8_t> SimuBlocks::Ramp(const unsigned NumOfSamples, const float Slope, const unsigned StartRampSample, const std::int8_t InitialOutput);
-template const std::vector<std::int16_t> SimuBlocks::Ramp(const unsigned NumOfSamples, const float Slope, const unsigned StartRampSample, const std::int16_t InitialOutput);
 
 template const std::vector<int> SimuBlocks::Constant(const unsigned NumOfSamples, const int ConstValue);
 template const std::vector<float> SimuBlocks::Constant(const unsigned NumOfSamples, const float ConstValue);
 template const std::vector<size_t> SimuBlocks::Constant(const unsigned NumOfSamples, const size_t ConstValue);
 template const std::vector<std::uint8_t> SimuBlocks::Constant(const unsigned NumOfSamples, const std::uint8_t ConstValue);
 template const std::vector<std::uint16_t> SimuBlocks::Constant(const unsigned NumOfSamples, const std::uint16_t ConstValue);
-template const std::vector<std::int8_t> SimuBlocks::Constant(const unsigned NumOfSamples, const std::int8_t ConstValue);
-template const std::vector<std::int16_t> SimuBlocks::Constant(const unsigned NumOfSamples, const std::int16_t ConstValue);
 
+template const std::vector<int> SimuBlocks::SineWave(const unsigned NumOfSamples, const int Amplitude, const unsigned SamplesPerPeriod, const unsigned PhaseDelay, const int Bias);
 template const std::vector<float> SimuBlocks::SineWave(const unsigned NumOfSamples, const float Amplitude, const unsigned SamplesPerPeriod, const unsigned PhaseDelay, const float Bias);
+
+template const std::vector<int> SimuBlocks::RandomNumber(const unsigned NumOfSamples, const int MinLimit, const int MaxLimit);
+template const std::vector<float> SimuBlocks::RandomNumber(const unsigned NumOfSamples, const float MinLimit, const float MaxLimit);
