@@ -1,6 +1,5 @@
 #include "sources.h"
 
-
 template <typename T>
 const std::vector<T> SimuBlocks::Constant(const unsigned NumOfSamples, const T ConstValue)
 {
@@ -124,7 +123,9 @@ const std::vector<T> SimuBlocks::Ramp(const unsigned NumOfSamples, const float S
 template <typename T>
 const std::vector<T> SimuBlocks::SineWave(const unsigned NumOfSamples, const T Amplitude, const unsigned SamplesPerPeriod, const unsigned PhaseDelay, const T Bias)
 {
-    // TODO: safety checks
+    // safety checks 
+    if (!NumOfSamples || !SamplesPerPeriod) 
+        throw std::invalid_argument("Number of samples and samples per period must be > 0");
     
     // initialize vector
     std::vector<T> vec (NumOfSamples, Bias); 

@@ -30,6 +30,7 @@ const std::vector<T> PulseGenerator(const unsigned NumOfSamples, const T Amplitu
 template <typename T>
 const std::vector<T> Ramp(const unsigned NumOfSamples, const float Slope, const unsigned StartRampSample, const T InitialOutput);
 
+// Sine Wave
 template <typename T>
 const std::vector<T> SineWave(const unsigned NumOfSamples, const T Amplitude, const unsigned SamplesPerPeriod, const unsigned PhaseDelay = 0, const T Bias = static_cast<T>(0));
 

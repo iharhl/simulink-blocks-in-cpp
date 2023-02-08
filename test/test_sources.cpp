@@ -3,7 +3,7 @@
 #include "sources.h"
 #include <iostream>
 
-TEST(StepBlockOutput, TypeInteger)
+TEST(StepBlock, TypeIntSuccess)
 {
     // arange
     unsigned num_of_samples = 10;
@@ -22,7 +22,7 @@ TEST(StepBlockOutput, TypeInteger)
     }
 }
 
-TEST(StepBlockOutput, TypeFloat)
+TEST(StepBlockOutput, TypeFloatSuccess)
 {
     // arange
     unsigned num_of_samples = 10;
@@ -41,7 +41,7 @@ TEST(StepBlockOutput, TypeFloat)
     }
 }
 
-TEST(StepBlockOutput, TypeSizet)
+TEST(StepBlock, TypeSizetSuccess)
 {
     // arange
     unsigned num_of_samples = 7;
@@ -60,7 +60,7 @@ TEST(StepBlockOutput, TypeSizet)
     }
 }
 
-TEST(StepBlockOutput, TypeUint8)
+TEST(StepBlock, TypeUint8Success)
 {
     // arange
     unsigned num_of_samples = 5;
@@ -79,7 +79,7 @@ TEST(StepBlockOutput, TypeUint8)
     }
 }
 
-TEST(PulseGeneratorBlockOutput, TypeInt)
+TEST(PulseGeneratorBlockOutput, TypeIntSuccess)
 {
     // arange
     unsigned num_of_samples = 10;
@@ -98,7 +98,7 @@ TEST(PulseGeneratorBlockOutput, TypeInt)
     }    
 }
 
-TEST(PulseGeneratorBlockOutput, TypeFloat)
+TEST(PulseGeneratorBlock, TypeFloatSuccess)
 {
     // arange
     unsigned num_of_samples = 10;
@@ -118,7 +118,7 @@ TEST(PulseGeneratorBlockOutput, TypeFloat)
     }    
 }
 
-TEST(RampBlockOutput, TypeInt)
+TEST(RampBlock, TypeIntSuccess)
 {
     // arange
     unsigned num_of_samples = 7;
@@ -137,7 +137,7 @@ TEST(RampBlockOutput, TypeInt)
     }    
 }
 
-TEST(RampBlockOutput, TypeFloat)
+TEST(RampBlockOut, TypeFloatSuccess)
 {
     // arange
     unsigned num_of_samples = 4;
@@ -156,7 +156,7 @@ TEST(RampBlockOutput, TypeFloat)
     }    
 }
 
-TEST(ConstantBlockOutput, TypeInt)
+TEST(ConstantBlock, TypeIntSuccess)
 {
     // arange
     unsigned num_of_samples = 11;
@@ -173,7 +173,7 @@ TEST(ConstantBlockOutput, TypeInt)
     }    
 }
 
-TEST(ConstantBlockOutput, TypeFloat)
+TEST(ConstantBlock, TypeFloatSuccess)
 {
     // arange
     unsigned num_of_samples = 3;
@@ -190,7 +190,7 @@ TEST(ConstantBlockOutput, TypeFloat)
     }    
 }
 
-TEST(SineWaveBlockOutput, TypeFloat)
+TEST(SineWaveBlock, TypeFloatSuccess)
 {
     // arange
     unsigned num_of_samples = 15;
@@ -208,7 +208,18 @@ TEST(SineWaveBlockOutput, TypeFloat)
     } 
 }
 
-TEST(RandomNumberBlockOutput, TypeFloat)
+TEST(SineWaveBlock, ThrowFailure)
+{
+    // arange
+    unsigned num_of_samples = 12;
+    float amplitude = 2.1f;
+    unsigned samples_per_period = 0;
+
+    // act and assert
+    ASSERT_THROW(SimuBlocks::SineWave(num_of_samples, amplitude, samples_per_period), std::invalid_argument);
+}
+
+TEST(RandomNumberBlock, TypeFloatSuccess)
 {
     // arange
     unsigned num_of_samples = 6;
