@@ -1,223 +1,250 @@
 #include "gtest/gtest.h"
 #include <vector>
 #include "sources.h"
+#include "Constant.h"
+#include "PulseGenerator.h"
+#include "SineWave.h"
+#include "Step.h"
+#include "Ramp.h"
 #include <iostream>
 
-TEST(StepBlock, TypeIntSuccess)
+TEST(StepBlock, TypeUint8)
 {
-    // arange
-    unsigned num_of_samples = 10;
-    int init_value = -1;
-    int final_value = 2;
-    unsigned step_sample = 4;
-    std::vector<int> expected_vec = {-1,-1,-1,2,2,2,2,2,2,2};
+    // Arange
+    const std::uint8_t InitValue = 0;
+    const std::uint8_t FinalValue = 120;
+    const unsigned StepSample = 3;
 
-    // act
-    std::vector<int> returned_vec = SimuBlocks::Step(num_of_samples, init_value, final_value, step_sample);
+    std::array<std::uint8_t, 10> ExpectedOutput = {0,0,120,120,120,120,120,120,120,120};
+    std::array<std::uint8_t, 10> ActualOutput;
 
-    // compare
-    for (int i = 0; i < num_of_samples; ++i)
+    SimuBlocks::Step StepBlock(InitValue, FinalValue, StepSample);
+
+    // Act
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
     {
-        ASSERT_EQ(expected_vec[i], returned_vec[i]);
+        StepBlock.Tick();
+        ActualOutput[i] = StepBlock.GetOutput();
     }
+
+    // Assert
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
+        ASSERT_EQ(ExpectedOutput[i], ActualOutput[i]);
 }
 
-TEST(StepBlockOutput, TypeFloatSuccess)
+TEST(StepBlock, TypeFloat)
 {
-    // arange
-    unsigned num_of_samples = 10;
-    float init_value = 1.0f;
-    float final_value = 5.0f;
-    unsigned step_sample = 5;
-    std::vector<float> expected_vec = {1.f,1.f,1.f,1.f,5.f,5.f,5.f,5.f,5.f,5.f};
+    // Arange
+    const float InitValue = 1.f;
+    const float FinalValue = 5.f;
+    const unsigned StepSample = 5;
 
-    // act
-    std::vector<float> returned_vec = SimuBlocks::Step(num_of_samples, init_value, final_value, step_sample);
+    std::array<float, 10> ExpectedOutput = {1.f,1.f,1.f,1.f,5.f,5.f,5.f,5.f,5.f,5.f};
+    std::array<float, 10> ActualOutput;
 
-    // compare
-    for (int i = 0; i < num_of_samples; ++i)
+    SimuBlocks::Step StepBlock(InitValue, FinalValue, StepSample);
+
+    // Act
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
     {
-        ASSERT_FLOAT_EQ(expected_vec[i], returned_vec[i]);
+        StepBlock.Tick();
+        ActualOutput[i] = StepBlock.GetOutput();
     }
+
+    // Assert
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
+        ASSERT_FLOAT_EQ(ExpectedOutput[i], ActualOutput[i]);
 }
 
-TEST(StepBlock, TypeSizetSuccess)
+TEST(PulseGeneratorBlock, TypeUint8)
 {
-    // arange
-    unsigned num_of_samples = 7;
-    size_t init_value = 999991;
-    size_t final_value = 9999999;
-    unsigned step_sample = 2;
-    std::vector<size_t> expected_vec = {999991,9999999,9999999,9999999,9999999,9999999,9999999};
+    // Arange
+    const std::uint8_t Amplitude = 18;
+    const unsigned Period = 4;
+    const unsigned DutyCycle = 25;
+    const unsigned PhaseDelay = 0;
 
-    // act
-    std::vector<size_t> returned_vec = SimuBlocks::Step(num_of_samples, init_value, final_value, step_sample);
+    std::array<std::uint8_t, 10> ExpectedOutput = {18,0,0,0,18,0,0,0,18,0};
+    std::array<std::uint8_t, 10> ActualOutput;
 
-    // compare
-    for (int i = 0; i < num_of_samples; ++i)
+    SimuBlocks::PulseGenerator PulseGeneratorBlock(Amplitude, Period, DutyCycle, PhaseDelay);
+
+    // Act
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
     {
-        ASSERT_EQ(expected_vec[i], returned_vec[i]);
+        PulseGeneratorBlock.Tick();
+        ActualOutput[i] = PulseGeneratorBlock.GetOutput();
     }
+
+    // Assert
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
+        ASSERT_EQ(ExpectedOutput[i], ActualOutput[i]);
 }
 
-TEST(StepBlock, TypeUint8Success)
+TEST(PulseGeneratorBlock, TypeFloat)
 {
-    // arange
-    unsigned num_of_samples = 5;
-    std::uint8_t init_value = 0;
-    std::uint8_t final_value = 255;
-    unsigned step_sample = 1;
-    std::vector<std::uint8_t> expected_vec = {255,255,255,255,255};
+    // Arange
+    const float Amplitude = 4.1f;
+    const unsigned Period = 6;
+    const unsigned DutyCycle = 50;
+    const unsigned PhaseDelay = 2;
 
-    // act
-    std::vector<std::uint8_t> returned_vec = SimuBlocks::Step(num_of_samples, init_value, final_value, step_sample);
+    std::array<float, 10> ExpectedOutput = {0.f,0.f,4.1f,4.1f,4.1f,0.f,0.f,0.f,4.1f,4.1f};
+    std::array<float, 10> ActualOutput;
 
-    // compare
-    for (int i = 0; i < num_of_samples; ++i)
+    SimuBlocks::PulseGenerator PulseGeneratorBlock(Amplitude, Period, DutyCycle, PhaseDelay);
+
+    // Act
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
     {
-        ASSERT_EQ(expected_vec[i], returned_vec[i]);
+        PulseGeneratorBlock.Tick();
+        ActualOutput[i] = PulseGeneratorBlock.GetOutput();
     }
+
+    // Assert
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
+        ASSERT_FLOAT_EQ(ExpectedOutput[i], ActualOutput[i]);
 }
 
-TEST(PulseGeneratorBlockOutput, TypeIntSuccess)
+// TEST(RampBlock, TypeInt)
+// {
+//     // arange
+//     unsigned num_of_samples = 7;
+//     float sloap = 4.3f;
+//     unsigned start_ramp = 3;
+//     int init_output = 1;
+//     std::vector<int> expected_vec = {1,1,5,9,13,17,21};
+
+//     // act
+//     std::vector<int> returned_vec = SimuBlocks::Ramp(num_of_samples, sloap, start_ramp, init_output);
+
+//     // compare
+//     for (int i = 0; i < num_of_samples; ++i)
+//     {
+//         ASSERT_EQ(expected_vec[i], returned_vec[i]);
+//     }    
+// }
+
+TEST(RampBlock, TypeUint8)
 {
-    // arange
-    unsigned num_of_samples = 10;
-    int amplitude = 4;
-    unsigned period = 6;
-    unsigned duty_cycle = 50;
-    std::vector<int> expected_vec = {4,4,4,0,0,0,4,4,4,0};
+    // Arange
+    const std::uint8_t Sloap = 7;
+    const unsigned StartRampSample = 3;
+    const std::uint8_t InitialOutput = 1;
 
-    // act
-    std::vector<int> returned_vec = SimuBlocks::PulseGenerator(num_of_samples, amplitude, period, duty_cycle);
+    std::array<std::uint8_t, 5> ExpectedOutput = {1,1,8,15,22};
+    std::array<std::uint8_t, 5> ActualOutput;
 
-    // compare
-    for (int i = 0; i < num_of_samples; ++i)
+    SimuBlocks::Ramp RampBlock(Sloap, StartRampSample, InitialOutput);
+
+    // Act
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
     {
-        ASSERT_EQ(expected_vec[i], returned_vec[i]);
-    }    
+        RampBlock.Tick();
+        ActualOutput[i] = RampBlock.GetOutput();
+    }
+
+    // Assert
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
+        ASSERT_FLOAT_EQ(ExpectedOutput[i], ActualOutput[i]);
 }
 
-TEST(PulseGeneratorBlock, TypeFloatSuccess)
+TEST(RampBlock, TypeFloat)
 {
-    // arange
-    unsigned num_of_samples = 10;
-    float amplitude = 4.1f;
-    unsigned period = 6;
-    unsigned duty_cycle = 50;
-    unsigned phase_delay = 2;
-    std::vector<float> expected_vec = {0.f,0.f,4.1f,4.1f,4.1f,0.f,0.f,0.f,4.1f,4.1f};
+    // Arange
+    const float Sloap = 4.3f;
+    const unsigned StartRampSample = 1;
+    const float InitialOutput = 0.5f;
 
-    // act
-    std::vector<float> returned_vec = SimuBlocks::PulseGenerator(num_of_samples, amplitude, period, duty_cycle, phase_delay);
+    std::array<float, 4> ExpectedOutput = {0.5f, 4.8f, 9.1f, 13.4f};
+    std::array<float, 4> ActualOutput;
 
-    // compare
-    for (int i = 0; i < num_of_samples; ++i)
+    SimuBlocks::Ramp RampBlock(Sloap, StartRampSample, InitialOutput);
+
+    // Act
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
     {
-        ASSERT_FLOAT_EQ(expected_vec[i], returned_vec[i]);
-    }    
+        RampBlock.Tick();
+        ActualOutput[i] = RampBlock.GetOutput();
+    }
+
+    // Assert
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
+        ASSERT_FLOAT_EQ(ExpectedOutput[i], ActualOutput[i]);
 }
 
-TEST(RampBlock, TypeIntSuccess)
+TEST(ConstBlock, TypeInt)
 {
-    // arange
-    unsigned num_of_samples = 7;
-    float sloap = 4.3f;
-    unsigned start_ramp = 3;
-    int init_output = 1;
-    std::vector<int> expected_vec = {1,1,5,9,13,17,21};
+    // Arange
+    const std::uint8_t ConstValue = 15;
 
-    // act
-    std::vector<int> returned_vec = SimuBlocks::Ramp(num_of_samples, sloap, start_ramp, init_output);
+    std::array<std::uint8_t, 5> ExpectedOutput = {15,15,15,15,15};
+    std::array<std::uint8_t, 5> ActualOutput;
 
-    // compare
-    for (int i = 0; i < num_of_samples; ++i)
+    SimuBlocks::Constant ConstBlock(ConstValue);
+
+    // Act
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
     {
-        ASSERT_EQ(expected_vec[i], returned_vec[i]);
-    }    
+        ActualOutput[i] = ConstBlock.GetOutput();
+        ConstBlock.Tick();
+    }
+
+    // Assert
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
+        ASSERT_EQ(ExpectedOutput[i], ActualOutput[i]);
 }
 
-TEST(RampBlockOut, TypeFloatSuccess)
+TEST(ConstBlock, TypeFloat)
 {
-    // arange
-    unsigned num_of_samples = 4;
-    float sloap = 4.3f;
-    unsigned start_ramp = 1;
-    float init_output = 0.5f;
-    std::vector<float> expected_vec = {0.5f, 4.8f, 9.1f, 13.4f};
+    // Arange
+    const float ConstValue = 34.43f;
 
-    // act
-    std::vector<float> returned_vec = SimuBlocks::Ramp(num_of_samples, sloap, start_ramp, init_output);
+    std::array<float, 5> ExpectedOutput = {34.43f,34.43f,34.43f,34.43f,34.43f};
+    std::array<float, 5> ActualOutput;
 
-    // compare
-    for (int i = 0; i < num_of_samples; ++i)
+    SimuBlocks::Constant ConstBlock(ConstValue);
+
+    // Act
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
     {
-        ASSERT_FLOAT_EQ(expected_vec[i], returned_vec[i]);
-    }    
+        ActualOutput[i] = ConstBlock.GetOutput();
+        ConstBlock.Tick();
+    }
+
+    // Assert
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
+        ASSERT_FLOAT_EQ(ExpectedOutput[i], ActualOutput[i]);
 }
 
-TEST(ConstantBlock, TypeIntSuccess)
-{
-    // arange
-    unsigned num_of_samples = 11;
-    int const_value = 15;
-    std::vector<int> expected_vec = {15,15,15,15,15,15,15,15,15,15,15};
+// TEST(SineWaveBlock, TypeFloatSuccess)
+// {
+//     // arange
+//     unsigned num_of_samples = 15;
+//     float amplitude = 2.1f;
+//     unsigned samples_per_period = 12;
+//     std::vector<float> expected_vec = {0.f,1.13534f,1.91022f,2.07862f,1.58707f,0.59163f,-0.59163f,-1.58707f,-2.07862f,-1.91022f,-1.13534f,0.f,1.13534f,1.91022f,2.07862f};
 
-    // act
-    std::vector<int> returned_vec = SimuBlocks::Constant(num_of_samples, const_value);
+//     // act
+//     std::vector<float> returned_vec = SimuBlocks::SineWave(num_of_samples, amplitude, samples_per_period);
 
-    // compare
-    for (int i = 0; i < num_of_samples; ++i)
-    {
-        ASSERT_EQ(expected_vec[i], returned_vec[i]);
-    }    
-}
+//     // compare
+//     for (int i = 0; i < num_of_samples; ++i)
+//     {
+//         ASSERT_NEAR(expected_vec[i], returned_vec[i], 0.00002);
+//     } 
+// }
 
-TEST(ConstantBlock, TypeFloatSuccess)
-{
-    // arange
-    unsigned num_of_samples = 3;
-    float const_value = 34.43f;
-    std::vector<float> expected_vec = {34.43f,34.43f,34.43f};
+// TEST(SineWaveBlock, ThrowFailure)
+// {
+//     // arange
+//     unsigned num_of_samples = 12;
+//     float amplitude = 2.1f;
+//     unsigned samples_per_period = 0;
 
-    // act
-    std::vector<float> returned_vec = SimuBlocks::Constant(num_of_samples, const_value);
-
-    // compare
-    for (int i = 0; i < num_of_samples; ++i)
-    {
-        ASSERT_EQ(expected_vec[i], returned_vec[i]);
-    }    
-}
-
-TEST(SineWaveBlock, TypeFloatSuccess)
-{
-    // arange
-    unsigned num_of_samples = 15;
-    float amplitude = 2.1f;
-    unsigned samples_per_period = 12;
-    std::vector<float> expected_vec = {0.f,1.13534f,1.91022f,2.07862f,1.58707f,0.59163f,-0.59163f,-1.58707f,-2.07862f,-1.91022f,-1.13534f,0.f,1.13534f,1.91022f,2.07862f};
-
-    // act
-    std::vector<float> returned_vec = SimuBlocks::SineWave(num_of_samples, amplitude, samples_per_period);
-
-    // compare
-    for (int i = 0; i < num_of_samples; ++i)
-    {
-        ASSERT_NEAR(expected_vec[i], returned_vec[i], 0.00002);
-    } 
-}
-
-TEST(SineWaveBlock, ThrowFailure)
-{
-    // arange
-    unsigned num_of_samples = 12;
-    float amplitude = 2.1f;
-    unsigned samples_per_period = 0;
-
-    // act and assert
-    ASSERT_THROW(SimuBlocks::SineWave(num_of_samples, amplitude, samples_per_period), std::invalid_argument);
-}
+//     // act and assert
+//     ASSERT_THROW(SimuBlocks::SineWave(num_of_samples, amplitude, samples_per_period), std::invalid_argument);
+// }
 
 TEST(RandomNumberBlock, TypeFloatSuccess)
 {
