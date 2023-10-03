@@ -3,6 +3,7 @@
 
 #include "BasicBlock.h"
 #include <numbers>
+#include <cmath>
 
 namespace SimuBlocks
 {
@@ -19,7 +20,7 @@ private:
     const T m_Amplitude;
     const T m_Bias;
     const unsigned m_SamplesPerPeriod;
-    const unsigned m_PhaseDelay;
+    const unsigned m_PhaseDelay; // discrete phase shift
 };
 
 }
@@ -36,7 +37,6 @@ SimuBlocks::SineWave<T>::SineWave( const T Amplitude,
                                    m_Bias(Bias)
 {
     m_Counter = 0;
-    // this->m_Output = m_Amplitude * static_cast<T>(std::sin(2 * std::numbers::pi * m_PhaseDelay / (m_SamplesPerPeriod-1)));
     this->m_Output = 0;
 };
 

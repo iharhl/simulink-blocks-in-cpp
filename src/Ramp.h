@@ -39,10 +39,8 @@ SimuBlocks::Ramp<T>::~Ramp() {};
 template <typename T>
 void SimuBlocks::Ramp<T>::Tick()
 {
-    m_Counter++;
-    
-    if (m_Counter < m_StartRampSample) {}
-        /* Do nothing (output is the same) */
+    if (m_Counter < m_StartRampSample)
+        m_Counter++;
     else
         this->m_Output += m_Slope;
 }

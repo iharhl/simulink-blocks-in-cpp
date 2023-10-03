@@ -1,16 +1,16 @@
 #include "gtest/gtest.h"
 #include <vector>
-#include "sources.h"
 #include "Constant.h"
 #include "PulseGenerator.h"
 #include "SineWave.h"
 #include "Step.h"
 #include "Ramp.h"
+#include "RandomNumberGenerator.h"
 #include <iostream>
 
 TEST(StepBlock, TypeUint8)
 {
-    // Arange
+    // Arrange
     const std::uint8_t InitValue = 0;
     const std::uint8_t FinalValue = 120;
     const unsigned StepSample = 3;
@@ -34,7 +34,7 @@ TEST(StepBlock, TypeUint8)
 
 TEST(StepBlock, TypeFloat)
 {
-    // Arange
+    // Arrange
     const float InitValue = 1.f;
     const float FinalValue = 5.f;
     const unsigned StepSample = 5;
@@ -58,7 +58,7 @@ TEST(StepBlock, TypeFloat)
 
 TEST(PulseGeneratorBlock, TypeUint8)
 {
-    // Arange
+    // Arrange
     const std::uint8_t Amplitude = 18;
     const unsigned Period = 4;
     const unsigned DutyCycle = 25;
@@ -83,7 +83,7 @@ TEST(PulseGeneratorBlock, TypeUint8)
 
 TEST(PulseGeneratorBlock, TypeFloat)
 {
-    // Arange
+    // Arrange
     const float Amplitude = 4.1f;
     const unsigned Period = 6;
     const unsigned DutyCycle = 50;
@@ -106,34 +106,15 @@ TEST(PulseGeneratorBlock, TypeFloat)
         ASSERT_FLOAT_EQ(ExpectedOutput[i], ActualOutput[i]);
 }
 
-// TEST(RampBlock, TypeInt)
-// {
-//     // arange
-//     unsigned num_of_samples = 7;
-//     float sloap = 4.3f;
-//     unsigned start_ramp = 3;
-//     int init_output = 1;
-//     std::vector<int> expected_vec = {1,1,5,9,13,17,21};
-
-//     // act
-//     std::vector<int> returned_vec = SimuBlocks::Ramp(num_of_samples, sloap, start_ramp, init_output);
-
-//     // compare
-//     for (int i = 0; i < num_of_samples; ++i)
-//     {
-//         ASSERT_EQ(expected_vec[i], returned_vec[i]);
-//     }    
-// }
-
 TEST(RampBlock, TypeUint8)
 {
-    // Arange
+    // Arrange
     const std::uint8_t Sloap = 7;
     const unsigned StartRampSample = 3;
     const std::uint8_t InitialOutput = 1;
 
-    std::array<std::uint8_t, 5> ExpectedOutput = {1,1,8,15,22};
-    std::array<std::uint8_t, 5> ActualOutput;
+    std::array<std::uint8_t, 6> ExpectedOutput = {1,1,1,8,15,22};
+    std::array<std::uint8_t, 6> ActualOutput;
 
     SimuBlocks::Ramp RampBlock(Sloap, StartRampSample, InitialOutput);
 
@@ -151,7 +132,7 @@ TEST(RampBlock, TypeUint8)
 
 TEST(RampBlock, TypeFloat)
 {
-    // Arange
+    // Arrange
     const float Sloap = 4.3f;
     const unsigned StartRampSample = 1;
     const float InitialOutput = 0.5f;
@@ -173,9 +154,9 @@ TEST(RampBlock, TypeFloat)
         ASSERT_FLOAT_EQ(ExpectedOutput[i], ActualOutput[i]);
 }
 
-TEST(ConstBlock, TypeInt)
+TEST(ConstBlock, TypeUint8)
 {
-    // Arange
+    // Arrange
     const std::uint8_t ConstValue = 15;
 
     std::array<std::uint8_t, 5> ExpectedOutput = {15,15,15,15,15};
@@ -186,8 +167,8 @@ TEST(ConstBlock, TypeInt)
     // Act
     for (int i = 0; i < ExpectedOutput.size(); ++i)
     {
-        ActualOutput[i] = ConstBlock.GetOutput();
         ConstBlock.Tick();
+        ActualOutput[i] = ConstBlock.GetOutput();
     }
 
     // Assert
@@ -197,7 +178,7 @@ TEST(ConstBlock, TypeInt)
 
 TEST(ConstBlock, TypeFloat)
 {
-    // Arange
+    // Arrange
     const float ConstValue = 34.43f;
 
     std::array<float, 5> ExpectedOutput = {34.43f,34.43f,34.43f,34.43f,34.43f};
@@ -208,13 +189,66 @@ TEST(ConstBlock, TypeFloat)
     // Act
     for (int i = 0; i < ExpectedOutput.size(); ++i)
     {
-        ActualOutput[i] = ConstBlock.GetOutput();
         ConstBlock.Tick();
+        ActualOutput[i] = ConstBlock.GetOutput();
     }
 
     // Assert
     for (int i = 0; i < ExpectedOutput.size(); ++i)
         ASSERT_FLOAT_EQ(ExpectedOutput[i], ActualOutput[i]);
+}
+
+TEST(SineWaveBlock, TypeDouble)
+{
+    // Arrange
+    const double Amplitude = 4.5f;
+    const unsigned SamplesPerPeriod = 15;
+    const unsigned PhaseDelay = 2;
+    const double Bias = 0.2f;
+
+    std::array<double, 15> ExpectedOutput = {}; // TODO
+    std::array<double, 15> ActualOutput;
+
+    SimuBlocks::SineWave SineWaveBlock(Amplitude, SamplesPerPeriod, PhaseDelay, Bias);
+
+    // Act
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
+    {
+        SineWaveBlock.Tick();
+        ActualOutput[i] = SineWaveBlock.GetOutput();
+        std::cout << ActualOutput[i] << " ";
+    }
+
+    // Assert
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
+        ASSERT_EQ(ExpectedOutput[i], ActualOutput[i]);
+}
+
+TEST(SineWaveBlock, TypeFloat)
+{
+    // Arrange
+    const float Amplitude = 2.1f;
+    const unsigned SamplesPerPeriod = 12;
+    const unsigned PhaseDelay = 0;
+    const float Bias = 0;
+
+    std::array<float, 15> ExpectedOutput = {0.f,1.13534f,1.91022f,2.07862f,1.58707f,0.59163f,\
+                                            -0.59163f,-1.58707f,-2.07862f,-1.91022f,-1.13534f,\
+                                            0.f,1.13534f,1.91022f,2.07862f};
+    std::array<float, 15> ActualOutput;
+
+    SimuBlocks::SineWave SineWaveBlock(Amplitude, SamplesPerPeriod, PhaseDelay, Bias);
+
+    // Act
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
+    {
+        SineWaveBlock.Tick();
+        ActualOutput[i] = SineWaveBlock.GetOutput();
+    }
+
+    // Assert
+    for (int i = 0; i < ExpectedOutput.size(); ++i)
+        ASSERT_NEAR(ExpectedOutput[i], ActualOutput[i], 0.00001);
 }
 
 // TEST(SineWaveBlock, TypeFloatSuccess)
@@ -235,33 +269,32 @@ TEST(ConstBlock, TypeFloat)
 //     } 
 // }
 
-// TEST(SineWaveBlock, ThrowFailure)
-// {
-//     // arange
-//     unsigned num_of_samples = 12;
-//     float amplitude = 2.1f;
-//     unsigned samples_per_period = 0;
-
-//     // act and assert
-//     ASSERT_THROW(SimuBlocks::SineWave(num_of_samples, amplitude, samples_per_period), std::invalid_argument);
-// }
-
-TEST(RandomNumberBlock, TypeFloatSuccess)
+TEST(RandomNumberBlock, TypeFloat)
 {
-    // arange
-    unsigned num_of_samples = 6;
-    float min_limit = 0;
-    float max_limit = 2;
+    // Arrange
+    const float MinLimit = 0.f;
+    const float MaxLimit = 2.f;
 
-    // act
-    std::vector<float> returned_vec = SimuBlocks::RandomNumber(num_of_samples, min_limit, max_limit);
+    std::array<float, 15> ActualOutput;
+    int duplicates = 0; // record number of duplicates
 
-    // compare
-    for (int i = 0; i < num_of_samples; ++i)
+    SimuBlocks::RandomNumberGenerator RandomNumberGeneratorBlock(MinLimit, MaxLimit);
+
+    // Act
+    for (int i = 0; i < ActualOutput.size(); ++i)
     {
-        ASSERT_LE(returned_vec[i], max_limit);
-        ASSERT_GE(returned_vec[i], min_limit);
+        RandomNumberGeneratorBlock.Tick();
+        ActualOutput[i] = RandomNumberGeneratorBlock.GetOutput();
+        if (i != 0) { if (ActualOutput[i] == ActualOutput[i-1]) { duplicates++; } }
     }
+
+    // Compare
+    for (int i = 0; i < ActualOutput.size(); ++i)
+    {
+        ASSERT_LE(ActualOutput[i], MaxLimit);
+        ASSERT_GE(ActualOutput[i], MinLimit);
+    }
+    ASSERT_LE(duplicates, (int)(ActualOutput.size()/2));
 }
 
 

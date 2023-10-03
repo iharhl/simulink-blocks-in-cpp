@@ -41,9 +41,9 @@ SimuBlocks::Step<T>::~Step() {}
 template<typename T>
 void SimuBlocks::Step<T>::Tick()
 {
-    m_Counter++;
-    if (m_Counter < m_StepSample)
+    if (m_Counter+1 < m_StepSample)
     {
+        m_Counter++;
         this->m_Output = m_InitValue;
     } else
     {
