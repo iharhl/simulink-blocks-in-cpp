@@ -10,9 +10,9 @@ class BasicBlock
 public:
     virtual void Tick();
     T GetOutput() const;
-    // virtual void SetInput();
+    virtual void SetInput(T InputValue);
 protected:
-    // T m_Input;
+    T m_Input;
     T m_Output;
 };
 
@@ -20,6 +20,12 @@ protected:
 
 template<typename T>
 void SimuBlocks::BasicBlock<T>::Tick() {}
+
+template<typename T>
+void SimuBlocks::BasicBlock<T>::SetInput(T InputValue)
+{
+    m_Input = InputValue;
+}
 
 template<typename T>
 T SimuBlocks::BasicBlock<T>::GetOutput() const

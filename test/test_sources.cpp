@@ -6,6 +6,7 @@
 #include "Step.h"
 #include "Ramp.h"
 #include "RandomNumberGenerator.h"
+#include "TransferFunction.h"
 #include <iostream>
 
 TEST(StepBlock, TypeUint8)
@@ -295,6 +296,34 @@ TEST(RandomNumberBlock, TypeFloat)
         ASSERT_GE(ActualOutput[i], MinLimit);
     }
     ASSERT_LE(duplicates, (int)(ActualOutput.size()/2));
+}
+
+TEST(TransferFunctionBlock, TypeFloat)
+{
+    // Arrange
+    const std::array<float,3> NominatorCoefficients = {1, 0, 0};
+    const std::array<float,3> DenominatorCoefficients = {0, 1, 0};
+    const float SamplingPeriod = 0.0001;
+
+    std::array<float, 5> ActualOutput;
+    std::array<float, 5> ExpectedOutput = {SamplingPeriod, SamplingPeriod*2, SamplingPeriod*3, SamplingPeriod*4, SamplingPeriod*5};
+
+    SimuBlocks::TransferFunction<float> TransferFunctionBlock(NominatorCoefficients, DenominatorCoefficients, SamplingPeriod);
+
+    // Act
+    TransferFunctionBlock.SetInput(1);
+    for (int i = 0; i < ActualOutput.size(); ++i)
+    {
+        TransferFunctionBlock.Tick();
+        ActualOutput[i] = TransferFunctionBlock.GetOutput();
+        std::cout << ActualOutput[i] << " ";
+    }
+
+    // Compare
+    for (int i = 0; i < ActualOutput.size(); ++i)
+    {
+        ASSERT_NEAR(ExpectedOutput[i], ActualOutput[i], 0.01);
+    }
 }
 
 
