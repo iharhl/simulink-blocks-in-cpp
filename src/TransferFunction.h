@@ -83,11 +83,15 @@ void SimuBlocks::TransferFunction<T>::GetTFOrder()
         if (m_NominatorCoefficients[i])
         {
             if (i > m_TFOrder)
+            {
                 // Order of nom cannot be higher than denom
                 std::exit(EXIT_FAILURE);
+            }
             else
+            {
                 m_NominatorOrder = i;
                 break;
+            }
         }
     }
 }
