@@ -298,15 +298,15 @@ TEST(RandomNumberBlock, TypeFloat)
     ASSERT_LE(duplicates, (int)(ActualOutput.size()/2));
 }
 
-TEST(TransferFunctionBlock, TypeFloat)
+TEST(TransferFunctionBlock, IntegratorResponse)
 {
     // Arrange
-    const std::array<float,3> NominatorCoefficients = {1, 0, 0};
+    const std::array<float,3> NominatorCoefficients = {0, 0, 1};
     const std::array<float,3> DenominatorCoefficients = {0, 1, 0};
-    const float SamplingPeriod = 0.0001;
+    const float SamplingPeriod = 0.001;
 
     std::array<float, 5> ActualOutput;
-    std::array<float, 5> ExpectedOutput = {SamplingPeriod, SamplingPeriod*2, SamplingPeriod*3, SamplingPeriod*4, SamplingPeriod*5};
+    std::array<float, 5> ExpectedOutput = {SamplingPeriod*0, SamplingPeriod*1, SamplingPeriod*2, SamplingPeriod*3, SamplingPeriod*4};
 
     SimuBlocks::TransferFunction<float> TransferFunctionBlock(NominatorCoefficients, DenominatorCoefficients, SamplingPeriod);
 
@@ -316,14 +316,55 @@ TEST(TransferFunctionBlock, TypeFloat)
     {
         TransferFunctionBlock.Tick();
         ActualOutput[i] = TransferFunctionBlock.GetOutput();
-        std::cout << ActualOutput[i] << " ";
     }
 
     // Compare
     for (int i = 0; i < ActualOutput.size(); ++i)
     {
-        ASSERT_NEAR(ExpectedOutput[i], ActualOutput[i], 0.01);
+        ASSERT_FLOAT_EQ(ExpectedOutput[i], ActualOutput[i]);
     }
+}
+
+TEST(TransferFunctionBlock, SecondOrderTFResponse)
+{
+    // Arrange
+    const std::array<float,3> NominatorCoefficients = {0, 1, 2}; // s+2
+    const std::array<float,3> DenominatorCoefficients = {1, 1, 2}; // s^2+s+2
+    const float SamplingPeriod = 0.0001;
+
+    const int Timestep1 = 1 / SamplingPeriod; // [tick]
+    const int Timestep2 = 2 / SamplingPeriod; // [tick]
+
+    float ExpectedMinOutputAtTimestep1 = 1.0;
+    float ExpectedMaxOutputAtTimestep1 = 1.1;
+    float ExpectedMinOutputAtTimestep2 = 1.35;
+    float ExpectedMaxOutputAtTimestep2 = 1.45;
+
+    SimuBlocks::TransferFunction<float> TransferFunctionBlock(NominatorCoefficients, DenominatorCoefficients, SamplingPeriod);
+
+    float ActualOutputAtTimestep1;
+    float ActualOutputAtTimestep2;
+
+    // Act
+    TransferFunctionBlock.SetInput(1);
+    for (int i = 0; i <= Timestep2; ++i)
+    {
+        TransferFunctionBlock.Tick();
+        if (i == Timestep1)
+        {
+            ActualOutputAtTimestep1 = TransferFunctionBlock.GetOutput();
+        }
+        else if (i == Timestep2)
+        {
+            ActualOutputAtTimestep2 = TransferFunctionBlock.GetOutput();
+        }
+    }
+
+    // Compare
+    ASSERT_LT(ActualOutputAtTimestep1, ExpectedMaxOutputAtTimestep1);
+    ASSERT_GT(ActualOutputAtTimestep1, ExpectedMinOutputAtTimestep1);
+    ASSERT_LT(ActualOutputAtTimestep2, ExpectedMaxOutputAtTimestep2);
+    ASSERT_GT(ActualOutputAtTimestep2, ExpectedMinOutputAtTimestep2);
 }
 
 

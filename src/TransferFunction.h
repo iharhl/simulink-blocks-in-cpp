@@ -7,7 +7,9 @@
 #include <utility>
 #include "BasicBlock.h"
 
-#define TF_ORDER_MAX 3
+// for now...
+#define TF_COEFF_NUM 3
+#define TF_ORDER_MAX 2
 
 namespace SimuBlocks
 {
@@ -16,38 +18,21 @@ template <typename T>
 class TransferFunction : public BasicBlock<T>
 {
 public:
-    TransferFunction(const std::array<float,TF_ORDER_MAX>& NominatorCoefficients,
-                     const std::array<float,TF_ORDER_MAX>& DenominatorCoefficients,
+    TransferFunction(const std::array<float,TF_COEFF_NUM>& NominatorCoefficients,
+                     const std::array<float,TF_COEFF_NUM>& DenominatorCoefficients,
                      const float SamplingPeriod = 0.001);
     ~TransferFunction();
     void Tick();
 
 private:
     void GetTFOrder();
-    const float m_Dt;
-    std::array<float,TF_ORDER_MAX> m_Nominator;
-    std::array<float,TF_ORDER_MAX> m_Denominator;
+    std::array<float,TF_COEFF_NUM> m_NominatorCoefficients; // inverse order - last is the lowest order
+    std::array<float,TF_COEFF_NUM> m_DenominatorCoefficients;
     uint8_t m_TFOrder; // same as denominator order
     uint8_t m_NominatorOrder;
-
-    // struct
-    // {
-    //     float ud0;
-    //     float udd0;
-    //     float y0;
-    //     float yd0;
-    // } m_TfTermsInitCond;
-
-    // struct
-    // {
-    //     std::pair<float,float> u;
-    //     std::pair<float,float> ud;
-    //     std::pair<float,float> udd;
-    //     std::pair<float,float> y;
-    //     std::pair<float,float> yd;
-    //     std::pair<float,float> ydd;
-    // } m_TfTerms;
-
+    std::array<std::pair<float,float>,TF_COEFF_NUM> m_TfInputTerms;
+    std::array<std::pair<float,float>,TF_COEFF_NUM> m_TfOutputTerms;
+    const float m_Dt;
     bool m_FirstStep;
 };
 
@@ -59,43 +44,43 @@ SimuBlocks::TransferFunction<T>::TransferFunction(const std::array<float,3>& Nom
                                                   const float SamplingPeriod)
                                                   :
                                                   m_Dt(SamplingPeriod),
-                                                  m_Nominator(NominatorCoefficients),
-                                                  m_Denominator(DenominatorCoefficients),
                                                   m_FirstStep(true)
 {
     this->m_Output = 0;
-    CheckTFOrder();
-
-    // m_TfTermsInitCond.y0 = 0.0;
-    // m_TfTermsInitCond.ud0 = 0.0;
-    // m_TfTermsInitCond.udd0 = 0.0;
-    // m_TfTermsInitCond.yd0 = 0.0;
-
-    // m_TfTerms.u = std::make_pair(this->m_Input, 0.f);
-    // m_TfTerms.ud = std::make_pair(0.f, 0.f);
-    // m_TfTerms.udd = std::make_pair(0.f, 0.f);
-    // m_TfTerms.y = std::make_pair(0.f, 0.f);
-    // m_TfTerms.yd = std::make_pair(0.f, 0.f);
-    // m_TfTerms.ydd = std::make_pair(0.f, 0.f);
+    for (int i = 0; i < TF_COEFF_NUM; ++i)
+    {
+        // Initialize terms with zeros
+        m_TfInputTerms[i] = std::make_pair(0, 0);
+        m_TfOutputTerms[i] = std::make_pair(0, 0);
+        // Swap the coefficients order
+        m_NominatorCoefficients[i] = NominatorCoefficients[TF_ORDER_MAX-i];
+        m_DenominatorCoefficients[i] = DenominatorCoefficients[TF_ORDER_MAX-i];
+    }
+    // Get order after coefficients swap
+    GetTFOrder();
 }
 
+
+/* TODO: improve */
 template<typename T>
 void SimuBlocks::TransferFunction<T>::GetTFOrder()
 {
-    for (uint8_t i = TF_ORDER_MAX; i > 0; --i)
+    // Denominator
+    for (uint8_t i = TF_ORDER_MAX; i >= 0; --i)
     {
-        if (m_Denominator[i])
+        if (m_DenominatorCoefficients[i])
         {
             m_TFOrder = i;
             break;
         }
     }
-    for (uint8_t i = TF_ORDER_MAX; i > 0; --i)
+    // Nominator
+    for (uint8_t i = TF_ORDER_MAX; i >= 0; --i)
     {
-        if (m_Nominator[i])
+        if (m_NominatorCoefficients[i])
         {
             if (i > m_TFOrder)
-                exit(1);
+                std::exit(EXIT_FAILURE);
             else
                 m_NominatorOrder = i;
                 break;
@@ -106,35 +91,41 @@ void SimuBlocks::TransferFunction<T>::GetTFOrder()
 template<typename T>
 SimuBlocks::TransferFunction<T>::~TransferFunction() {}
 
-// template<typename T>
-// void SimuBlocks::TransferFunction<T>::Tick()
-// {
-//     m_TfTerms.u.first = m_TfTerms.u.second;
-//     m_TfTerms.u.second = this->m_Input;
+template<typename T>
+void SimuBlocks::TransferFunction<T>::Tick()
+{
+    // TODO: reverse the order
+    // Solving input terms
+    float SumOfInputTerms = 0;
+    for (int i = 0; i <= m_NominatorOrder; ++i)
+    {
+        // Update
+        m_TfInputTerms[i].first = m_TfInputTerms[i].second;
+        // Calculate terms
+        if (i == 0)
+            m_TfInputTerms[i].second = this->m_Input;
+        else
+            m_TfInputTerms[i].second = (m_TfInputTerms[i-1].second - m_TfInputTerms[i-1].first) / m_Dt;
 
-//     if (m_FirstStep)
-//     {
-//         m_TfTerms.ud.second = m_TfTermsInitCond.ud0;
-//         m_TfTerms.yd.second = m_TfTermsInitCond.yd0;
-//         m_TfTerms.y.second = m_TfTermsInitCond.y0;
-//         m_FirstStep = false;
-//     }
-//     else
-//     {
-//         m_TfTerms.ud.second = (m_TfTerms.u.second - m_TfTerms.u.first) / m_Dt;
-//         m_TfTerms.udd.second = (m_TfTerms.ud.second - m_TfTerms.ud.first) / m_Dt;
-//         m_TfTerms.yd.second = m_TfTerms.yd.first + m_Dt * m_TfTerms.ydd.first;
-//         m_TfTerms.y.second = m_TfTerms.y.first + m_Dt * m_TfTerms.yd.first;
-//     }
-//     m_TfTerms.ydd.second = (m_Nominator[2]*m_TfTerms.udd.second + m_Nominator[1]*m_TfTerms.ud.second + m_Nominator[0]*m_TfTerms.u.second - m_Denominator[1]*m_TfTerms.yd.second - m_Denominator[0]*m_TfTerms.y.second) / m_Denominator[2];
-//     this->m_Output = m_TfTerms.y.second;
+        SumOfInputTerms += m_TfInputTerms[i].second * m_NominatorCoefficients[i];
+    } 
 
-//     // Update
-//     m_TfTerms.ud.first = m_TfTerms.ud.second;
-//     m_TfTerms.udd.first = m_TfTerms.udd.second;
-//     m_TfTerms.y.first = m_TfTerms.y.second;
-//     m_TfTerms.yd.first = m_TfTerms.yd.second;
-//     m_TfTerms.ydd.first = m_TfTerms.y.second;
-// }
+    // Solving output terms
+    float SumOfOutputTerms = 0;
+    for (int i = m_TFOrder-1; i >= 0; --i)
+    {
+        // Update
+        m_TfOutputTerms[i].first = m_TfOutputTerms[i].second;
+        // Calculate terms
+        m_TfOutputTerms[i].second = m_TfOutputTerms[i].first + m_Dt * m_TfOutputTerms[i+1].second;
+
+        SumOfOutputTerms += m_TfOutputTerms[i].second * m_DenominatorCoefficients[i];
+    }
+
+    m_TfOutputTerms[m_TFOrder].first = m_TfOutputTerms[m_TFOrder].second;
+    m_TfOutputTerms[m_TFOrder].second = (SumOfInputTerms - SumOfOutputTerms) / m_DenominatorCoefficients[m_TFOrder];
+
+    this->m_Output = m_TfOutputTerms[0].second;
+}
 
 #endif
