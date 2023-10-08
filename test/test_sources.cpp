@@ -351,13 +351,9 @@ TEST(TransferFunctionBlock, SecondOrderTFResponse)
     {
         TransferFunctionBlock.Tick();
         if (i == Timestep1)
-        {
             ActualOutputAtTimestep1 = TransferFunctionBlock.GetOutput();
-        }
         else if (i == Timestep2)
-        {
             ActualOutputAtTimestep2 = TransferFunctionBlock.GetOutput();
-        }
     }
 
     // Compare
