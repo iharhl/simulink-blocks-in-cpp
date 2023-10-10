@@ -2,6 +2,8 @@
 #define _TRANSFER_FUNCTION_H
 
 #include <utility>
+#include <array>
+#include <cstdlib>
 #include "BasicBlock.h"
 
 // TODO: improve the defines
