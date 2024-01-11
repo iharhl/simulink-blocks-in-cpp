@@ -4,6 +4,8 @@
 namespace SimuBlocks
 {
 
+enum BlockIOType { InputOnly, OutputOnly, InputOutput };
+
 template <typename T>
 class BasicBlock
 {
@@ -14,6 +16,7 @@ public:
 protected:
     T m_Input;
     T m_Output;
+    BlockIOType m_BlockType;
 };
 
 }
@@ -24,6 +27,7 @@ void SimuBlocks::BasicBlock<T>::Tick() {}
 template<typename T>
 void SimuBlocks::BasicBlock<T>::SetInput(T InputValue)
 {
+    assert(this->m_BlockType != OutputOnly);
     m_Input = InputValue;
 }
 

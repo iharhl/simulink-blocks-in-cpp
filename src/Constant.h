@@ -19,8 +19,11 @@ public:
 template<typename T>
 SimuBlocks::Constant<T>::Constant(const T ConstValue)
 {
+    this->m_BlockType = OutputOnly;
     this->m_Output = ConstValue;
 };
+
+
 
 template<typename T>
 SimuBlocks::Constant<T>::~Constant() {};
