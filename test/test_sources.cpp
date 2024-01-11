@@ -7,6 +7,7 @@
 #include "Ramp.h"
 #include "RandomNumberGenerator.h"
 #include "TransferFunction.h"
+#include "FixedPointArithmetic.h"
 #include <iostream>
 
 TEST(StepBlock, TypeUint8)
@@ -361,6 +362,27 @@ TEST(TransferFunctionBlock, SecondOrderTFResponse)
     ASSERT_GT(ActualOutputAtTimestep1, ExpectedMinOutputAtTimestep1);
     ASSERT_LT(ActualOutputAtTimestep2, ExpectedMaxOutputAtTimestep2);
     ASSERT_GT(ActualOutputAtTimestep2, ExpectedMinOutputAtTimestep2);
+}
+
+TEST(FixedPointArithmetic, Test1)
+{
+
+    // Arrange
+    using sfix16_En8 = fixdt<int16_t, 8>;
+    int16_t ValueAsInteger = 2432;
+    float ValueAsFloat = 9.5;
+    
+    // Act
+    sfix16_En8 FixedPointValue(9.5f);
+
+    // Assert
+
+    // GTest assert does not work...
+    // ASSERT_EQ(FixedPointValue, ValueAsInteger);
+    // assert(FixedPointValue == ValueAsInteger);
+
+    ASSERT_EQ(float(FixedPointValue), ValueAsFloat);
+    ASSERT_EQ(sizeof(FixedPointValue), 2); // 2 bytes
 }
 
 
