@@ -1,5 +1,4 @@
 #include "gtest/gtest.h"
-#include <vector>
 #include "Constant.h"
 #include "PulseGenerator.h"
 #include "SineWave.h"
@@ -17,8 +16,8 @@ TEST(StepBlock, TypeUint8)
     const std::uint8_t FinalValue = 120;
     const unsigned StepSample = 3;
 
-    std::array<std::uint8_t, 10> ExpectedOutput = {0,0,120,120,120,120,120,120,120,120};
-    std::array<std::uint8_t, 10> ActualOutput;
+    const std::array<std::uint8_t, 10> ExpectedOutput = {0,0,120,120,120,120,120,120,120,120};
+    std::array<std::uint8_t, 10> ActualOutput {};
 
     SimuBlocks::Step StepBlock(InitValue, FinalValue, StepSample);
 
@@ -41,8 +40,8 @@ TEST(StepBlock, TypeFloat)
     const float FinalValue = 5.f;
     const unsigned StepSample = 5;
 
-    std::array<float, 10> ExpectedOutput = {1.f,1.f,1.f,1.f,5.f,5.f,5.f,5.f,5.f,5.f};
-    std::array<float, 10> ActualOutput;
+    const std::array<float, 10> ExpectedOutput = {1.f,1.f,1.f,1.f,5.f,5.f,5.f,5.f,5.f,5.f};
+    std::array<float, 10> ActualOutput {};
 
     SimuBlocks::Step StepBlock(InitValue, FinalValue, StepSample);
 
@@ -66,8 +65,8 @@ TEST(PulseGeneratorBlock, TypeUint8)
     const unsigned DutyCycle = 25;
     const unsigned PhaseDelay = 0;
 
-    std::array<std::uint8_t, 10> ExpectedOutput = {18,0,0,0,18,0,0,0,18,0};
-    std::array<std::uint8_t, 10> ActualOutput;
+    const std::array<std::uint8_t, 10> ExpectedOutput = {18,0,0,0,18,0,0,0,18,0};
+    std::array<std::uint8_t, 10> ActualOutput {};
 
     SimuBlocks::PulseGenerator PulseGeneratorBlock(Amplitude, Period, DutyCycle, PhaseDelay);
 
@@ -91,8 +90,8 @@ TEST(PulseGeneratorBlock, TypeFloat)
     const unsigned DutyCycle = 50;
     const unsigned PhaseDelay = 2;
 
-    std::array<float, 10> ExpectedOutput = {0.f,0.f,4.1f,4.1f,4.1f,0.f,0.f,0.f,4.1f,4.1f};
-    std::array<float, 10> ActualOutput;
+    const std::array<float, 10> ExpectedOutput = {0.f,0.f,4.1f,4.1f,4.1f,0.f,0.f,0.f,4.1f,4.1f};
+    std::array<float, 10> ActualOutput {};
 
     SimuBlocks::PulseGenerator PulseGeneratorBlock(Amplitude, Period, DutyCycle, PhaseDelay);
 
@@ -115,8 +114,8 @@ TEST(RampBlock, TypeUint8)
     const unsigned StartRampSample = 3;
     const std::uint8_t InitialOutput = 1;
 
-    std::array<std::uint8_t, 6> ExpectedOutput = {1,1,1,8,15,22};
-    std::array<std::uint8_t, 6> ActualOutput;
+    const std::array<std::uint8_t, 6> ExpectedOutput = {1,1,1,8,15,22};
+    std::array<std::uint8_t, 6> ActualOutput {};
 
     SimuBlocks::Ramp RampBlock(Sloap, StartRampSample, InitialOutput);
 
@@ -139,8 +138,8 @@ TEST(RampBlock, TypeFloat)
     const unsigned StartRampSample = 1;
     const float InitialOutput = 0.5f;
 
-    std::array<float, 4> ExpectedOutput = {0.5f, 4.8f, 9.1f, 13.4f};
-    std::array<float, 4> ActualOutput;
+    const std::array<float, 4> ExpectedOutput = {0.5f, 4.8f, 9.1f, 13.4f};
+    std::array<float, 4> ActualOutput {};
 
     SimuBlocks::Ramp RampBlock(Sloap, StartRampSample, InitialOutput);
 
@@ -161,8 +160,8 @@ TEST(ConstBlock, TypeUint8)
     // Arrange
     const std::uint8_t ConstValue = 15;
 
-    std::array<std::uint8_t, 5> ExpectedOutput = {15,15,15,15,15};
-    std::array<std::uint8_t, 5> ActualOutput;
+    const std::array<std::uint8_t, 5> ExpectedOutput = {15,15,15,15,15};
+    std::array<std::uint8_t, 5> ActualOutput {};
 
     SimuBlocks::Constant ConstBlock(ConstValue);
 
@@ -183,8 +182,8 @@ TEST(ConstBlock, TypeFloat)
     // Arrange
     const float ConstValue = 34.43f;
 
-    std::array<float, 5> ExpectedOutput = {34.43f,34.43f,34.43f,34.43f,34.43f};
-    std::array<float, 5> ActualOutput;
+    const std::array<float, 5> ExpectedOutput = {34.43f,34.43f,34.43f,34.43f,34.43f};
+    std::array<float, 5> ActualOutput {};
 
     SimuBlocks::Constant ConstBlock(ConstValue);
 
@@ -208,8 +207,8 @@ TEST(SineWaveBlock, TypeDouble)
     const unsigned PhaseDelay = 2;
     const double Bias = 0.2f;
 
-    std::array<double, 15> ExpectedOutput = {}; // TODO
-    std::array<double, 15> ActualOutput;
+    const std::array<double, 15> ExpectedOutput = {}; // TODO
+    std::array<double, 15> ActualOutput {};
 
     SimuBlocks::SineWave SineWaveBlock(Amplitude, SamplesPerPeriod, PhaseDelay, Bias);
 
@@ -234,10 +233,10 @@ TEST(SineWaveBlock, TypeFloat)
     const unsigned PhaseDelay = 0;
     const float Bias = 0;
 
-    std::array<float, 15> ExpectedOutput = {0.f,1.13534f,1.91022f,2.07862f,1.58707f,0.59163f,\
+    const std::array<float, 15> ExpectedOutput = {0.f,1.13534f,1.91022f,2.07862f,1.58707f,0.59163f,\
                                             -0.59163f,-1.58707f,-2.07862f,-1.91022f,-1.13534f,\
                                             0.f,1.13534f,1.91022f,2.07862f};
-    std::array<float, 15> ActualOutput;
+    std::array<float, 15> ActualOutput {};
 
     SimuBlocks::SineWave SineWaveBlock(Amplitude, SamplesPerPeriod, PhaseDelay, Bias);
 
@@ -277,7 +276,7 @@ TEST(RandomNumberBlock, TypeFloat)
     const float MinLimit = 0.f;
     const float MaxLimit = 2.f;
 
-    std::array<float, 15> ActualOutput;
+    std::array<float, 15> ActualOutput {};
     int duplicates = 0; // record number of duplicates
 
     SimuBlocks::RandomNumberGenerator RandomNumberGeneratorBlock(MinLimit, MaxLimit);
@@ -291,12 +290,12 @@ TEST(RandomNumberBlock, TypeFloat)
     }
 
     // Compare
-    for (int i = 0; i < ActualOutput.size(); ++i)
+    for (float i : ActualOutput)
     {
-        ASSERT_LE(ActualOutput[i], MaxLimit);
-        ASSERT_GE(ActualOutput[i], MinLimit);
+        ASSERT_LE(i, MaxLimit);
+        ASSERT_GE(i, MinLimit);
     }
-    ASSERT_LE(duplicates, (int)(ActualOutput.size()/2));
+    ASSERT_LE(duplicates, static_cast<int>(ActualOutput.size() / 2));
 }
 
 TEST(TransferFunctionBlock, IntegratorResponse)
@@ -306,17 +305,17 @@ TEST(TransferFunctionBlock, IntegratorResponse)
     const std::array<float,3> DenominatorCoefficients = {0, 1, 0};
     const float SamplingPeriod = 0.001;
 
-    std::array<float, 5> ActualOutput;
-    std::array<float, 5> ExpectedOutput = {SamplingPeriod*0, SamplingPeriod*1, SamplingPeriod*2, SamplingPeriod*3, SamplingPeriod*4};
+    std::array<float, 5> ActualOutput {};
+    const std::array<float, 5> ExpectedOutput = {SamplingPeriod*0, SamplingPeriod*1, SamplingPeriod*2, SamplingPeriod*3, SamplingPeriod*4};
 
     SimuBlocks::TransferFunction<float> TransferFunctionBlock(NominatorCoefficients, DenominatorCoefficients, SamplingPeriod);
 
     // Act
     TransferFunctionBlock.SetInput(1);
-    for (int i = 0; i < ActualOutput.size(); ++i)
+    for (float& i : ActualOutput)
     {
         TransferFunctionBlock.Tick();
-        ActualOutput[i] = TransferFunctionBlock.GetOutput();
+        i = TransferFunctionBlock.GetOutput();
     }
 
     // Compare
@@ -333,13 +332,13 @@ TEST(TransferFunctionBlock, SecondOrderTFResponse)
     const std::array<float,3> DenominatorCoefficients = {1, 1, 2}; // s^2+s+2
     const float SamplingPeriod = 0.0001;
 
-    const int Timestep1 = 1 / SamplingPeriod; // [tick]
-    const int Timestep2 = 2 / SamplingPeriod; // [tick]
+    const int Timestep1 = static_cast<int>(1 / SamplingPeriod); // [tick]
+    const int Timestep2 = static_cast<int>(2 / SamplingPeriod); // [tick]
 
-    float ExpectedMinOutputAtTimestep1 = 1.0;
-    float ExpectedMaxOutputAtTimestep1 = 1.1;
-    float ExpectedMinOutputAtTimestep2 = 1.35;
-    float ExpectedMaxOutputAtTimestep2 = 1.45;
+    const float ExpectedMinOutputAtTimestep1 = 1.0;
+    const float ExpectedMaxOutputAtTimestep1 = 1.1;
+    const float ExpectedMinOutputAtTimestep2 = 1.35;
+    const float ExpectedMaxOutputAtTimestep2 = 1.45;
 
     SimuBlocks::TransferFunction<float> TransferFunctionBlock(NominatorCoefficients, DenominatorCoefficients, SamplingPeriod);
 
@@ -369,11 +368,11 @@ TEST(FixedPointArithmetic, Test1)
 
     // Arrange
     using sfix16_En8 = fixdt<int16_t, 8>;
-    int16_t ValueAsInteger = 2432;
-    float ValueAsFloat = 9.5;
+    // int16_t ValueAsInteger = 2432;
+    const float ValueAsFloat = 9.5;
     
     // Act
-    sfix16_En8 FixedPointValue(9.5f);
+    const sfix16_En8 FixedPointValue(9.5f);
 
     // Assert
 
@@ -381,7 +380,7 @@ TEST(FixedPointArithmetic, Test1)
     // ASSERT_EQ(FixedPointValue, ValueAsInteger);
     // assert(FixedPointValue == ValueAsInteger);
 
-    ASSERT_EQ(float(FixedPointValue), ValueAsFloat);
+    ASSERT_EQ(static_cast<float>(FixedPointValue), ValueAsFloat);
     ASSERT_EQ(sizeof(FixedPointValue), 2); // 2 bytes
 }
 

@@ -1,7 +1,6 @@
-#ifndef _TRANSFER_FUNCTION_H
-#define _TRANSFER_FUNCTION_H
+#ifndef TRANSFER_FUNCTION_H_
+#define TRANSFER_FUNCTION_H_
 
-#include <utility>
 #include <array>
 #include <cstdlib>
 #include "BasicBlock.h"
@@ -19,25 +18,24 @@ class TransferFunction : public BasicBlock<T>
 public:
     TransferFunction(const std::array<float,TF_COEFF_NUM>& NominatorCoefficients,
                      const std::array<float,TF_COEFF_NUM>& DenominatorCoefficients,
-                     const float SamplingPeriod = 0.001);
-    ~TransferFunction();
-    void Tick();
+                     float SamplingPeriod = 0.001);
+    void Tick() override;
 
 private:
     void GetTFOrder();
 
     /* Array that holds coefficients; order is reversed */
-    std::array<float,TF_COEFF_NUM> m_NominatorCoefficients;
-    std::array<float,TF_COEFF_NUM> m_DenominatorCoefficients;
+    std::array<float,TF_COEFF_NUM> m_NominatorCoefficients {};
+    std::array<float,TF_COEFF_NUM> m_DenominatorCoefficients {};
 
     /* Order of denominator (= order of TF) and nominator */
-    uint8_t m_TFOrder;
-    uint8_t m_NominatorOrder;
+    uint8_t m_TFOrder {0};
+    uint8_t m_NominatorOrder {0};
 
     /* Input terms (u, ud, udd...) and Output terms (y, yd, ydd...) arrays.
        Contain a pair of values (prev and current ones). */
-    std::array<std::pair<float,float>,TF_COEFF_NUM> m_TfInputTerms;
-    std::array<std::pair<float,float>,TF_COEFF_NUM> m_TfOutputTerms;
+    std::array<std::pair<float,float>,TF_COEFF_NUM> m_TfInputTerms {};
+    std::array<std::pair<float,float>,TF_COEFF_NUM> m_TfOutputTerms {};
 
     const float m_Dt;
     bool m_FirstStep;
@@ -71,7 +69,7 @@ template<typename T>
 void SimuBlocks::TransferFunction<T>::GetTFOrder()
 {
     // Get order of denominator (= of TF)
-    for (uint8_t i = TF_ORDER_MAX; i >= 0; --i)
+    for (int i = TF_ORDER_MAX; i >= 0; --i)
     {
         if (m_DenominatorCoefficients[i])
         {
@@ -80,7 +78,7 @@ void SimuBlocks::TransferFunction<T>::GetTFOrder()
         }
     }
     // Get order of nominator
-    for (uint8_t i = TF_ORDER_MAX; i >= 0; --i)
+    for (int i = TF_ORDER_MAX; i >= 0; --i)
     {
         if (m_NominatorCoefficients[i])
         {
@@ -97,9 +95,6 @@ void SimuBlocks::TransferFunction<T>::GetTFOrder()
         }
     }
 }
-
-template<typename T>
-SimuBlocks::TransferFunction<T>::~TransferFunction() {}
 
 template<typename T>
 void SimuBlocks::TransferFunction<T>::Tick()

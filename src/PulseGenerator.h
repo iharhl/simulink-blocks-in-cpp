@@ -1,5 +1,5 @@
-#ifndef _PULSE_GENERATOR_H
-#define _PULSE_GENERATOR_H
+#ifndef PULSE_GENERATOR_H_
+#define PULSE_GENERATOR_H_
 
 #include "BasicBlock.h"
 
@@ -11,20 +11,19 @@ class PulseGenerator : public BasicBlock<T>
 {
 
 public:
-    PulseGenerator( const T Amplitude,
-                    const unsigned Period,
-                    const unsigned DutyCycle,
-                    const unsigned PhaseDelay );
-    ~PulseGenerator();
-    void Tick();
+    PulseGenerator( T Amplitude,
+                    unsigned Period,
+                    unsigned DutyCycle,
+                    unsigned PhaseDelay );
+    void Tick() override;
 
 private:
+    const T m_Amplitude;
+    const unsigned m_Period;
     unsigned m_Counter; // not a time or total tick time counter
     unsigned m_PhaseDelayCounter; // other way ?
-    const T m_Amplitude;
     unsigned m_PhaseDelay;
     unsigned m_PulseWidth;
-    const unsigned m_Period;
 };
 
 }
@@ -44,9 +43,6 @@ SimuBlocks::PulseGenerator<T>::PulseGenerator( const T Amplitude,
     m_PulseWidth = (Period * DutyCycle) / 100;
     this->m_Output = 0;
 }
-
-template <typename T>
-SimuBlocks::PulseGenerator<T>::~PulseGenerator() {}
 
 template <typename T>
 void SimuBlocks::PulseGenerator<T>::Tick()

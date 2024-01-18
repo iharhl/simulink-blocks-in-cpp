@@ -1,5 +1,5 @@
-#ifndef _CONSTANT_H
-#define _CONSTANT_H
+#ifndef CONSTANT_H_
+#define CONSTANT_H_
 
 #include "BasicBlock.h"
 
@@ -10,8 +10,7 @@ template <typename T>
 class Constant : public BasicBlock<T>
 {
 public:
-    Constant(const T ConstValue);
-    ~Constant();
+    explicit Constant(T ConstValue);
 };
 
 }
@@ -22,10 +21,5 @@ SimuBlocks::Constant<T>::Constant(const T ConstValue)
     this->m_BlockType = OutputOnly;
     this->m_Output = ConstValue;
 };
-
-
-
-template<typename T>
-SimuBlocks::Constant<T>::~Constant() {};
 
 #endif

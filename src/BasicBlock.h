@@ -1,22 +1,23 @@
-#ifndef _BASIC_BLOCK_H
-#define _BASIC_BLOCK_H
+#ifndef BASIC_BLOCK_H_
+#define BASIC_BLOCK_H_
 
 namespace SimuBlocks
 {
 
-enum BlockIOType { InputOnly, OutputOnly, InputOutput };
+enum BlockIOType { Unknown, InputOnly, OutputOnly, InputOutput };
 
 template <typename T>
 class BasicBlock
 {
 public:
+    virtual ~BasicBlock() = default;
     virtual void Tick();
     T GetOutput() const;
     virtual void SetInput(T InputValue);
 protected:
     T m_Input;
     T m_Output;
-    BlockIOType m_BlockType;
+    BlockIOType m_BlockType = Unknown;
 };
 
 }

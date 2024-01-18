@@ -1,5 +1,5 @@
-#ifndef _FIXDT_H
-#define _FIXDT_H
+#ifndef FIXDT_H_
+#define FIXDT_H_
 
 #include <cassert>
 #include <bitset>
@@ -14,14 +14,14 @@ public:
     
     fixdt() = default;
     
-    fixdt(const double Value)
+    explicit fixdt(const double Value)
     {
-        FixedValue = T(Value * double(1 << FractionLength) + (Value >= 0 ? 0.5 : -0.5));
+        FixedValue = T(Value * static_cast<double>(1 << FractionLength) + (Value >= 0 ? 0.5 : -0.5));
     }
     
-    fixdt(const float Value)
+    explicit fixdt(const float Value)
     {
-        FixedValue = T(Value * float(1 << FractionLength) + (Value >= 0 ? 0.5f : -0.5f));
+        FixedValue = T(Value * static_cast<float>(1 << FractionLength) + (Value >= 0 ? 0.5f : -0.5f));
     }
     
 private:
@@ -29,14 +29,14 @@ private:
     
 public:
 
-    operator float() const
+    explicit operator float() const
     {
-        return float(FixedValue) / float(1 << FractionLength);
+        return static_cast<float>(FixedValue) / static_cast<float>(1 << FractionLength);
     }
 
-    operator double() const
+    explicit operator double() const
     {
-        return double(FixedValue) / double(1 << FractionLength);
+        return static_cast<double>(FixedValue) / static_cast<double>(1 << FractionLength);
     }
     
     fixdt& operator = (const fixdt& f) = default;
@@ -97,10 +97,10 @@ public:
         return T(this->FixedValue) == val;
     }
     
-    // std::bitset<sizeof(T)*8> GetBinary(void)
-    // {
-    //     return std::bitset<sizeof(T)*8>(this->FixedValue);
-    // }
+    std::bitset<sizeof(T)*8> GetBinary()
+    {
+        return std::bitset<sizeof(T)*8>(this->FixedValue);
+    }
 };
 
 #endif

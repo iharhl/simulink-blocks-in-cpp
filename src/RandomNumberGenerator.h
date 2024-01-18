@@ -1,5 +1,5 @@
-#ifndef _RAND_NUM_GEN_H
-#define _RAND_NUM_GEN_H
+#ifndef RAND_NUM_GEN_H_
+#define RAND_NUM_GEN_H_
 
 #include "BasicBlock.h"
 #include <random>
@@ -11,13 +11,13 @@ template <typename T>
 class RandomNumberGenerator : public BasicBlock<T>
 {
 public:
-    RandomNumberGenerator(const T MinLimit, const T MaxLimit);
-    ~RandomNumberGenerator();
-    void Tick();
+    RandomNumberGenerator(T MinLimit, T MaxLimit);
+    void Tick() override;
 private:
     const T m_MinLimit;
     const T m_MaxLimit;
-    using uniform_distribution_t = std::conditional<std::is_integral<T>::value,std::uniform_int_distribution<T>,std::uniform_real_distribution<T>>::type;
+    using uniform_distribution_t = std::conditional_t<std::is_integral_v<T>,std::uniform_int_distribution<T>,
+                                    std::uniform_real_distribution<T>>;
     std::mt19937 m_Generator; // pseudo-random generator
     uniform_distribution_t m_Distribution; // random number distribution
 };
@@ -35,9 +35,6 @@ SimuBlocks::RandomNumberGenerator<T>::RandomNumberGenerator(const T MinLimit,
 {
     this->m_Output = 0;
 };
-
-template<typename T>
-SimuBlocks::RandomNumberGenerator<T>::~RandomNumberGenerator() {};
 
 template <typename T>
 void SimuBlocks::RandomNumberGenerator<T>::Tick()

@@ -1,5 +1,5 @@
-#ifndef _RAMP_H
-#define _RAMP_H
+#ifndef RAMP_H_
+#define RAMP_H_
 
 #include "BasicBlock.h"
 
@@ -10,13 +10,12 @@ template <typename T>
 class Ramp : public BasicBlock<T>
 {
 public:
-    Ramp(const T Slope, const unsigned StartRampSample, const T InitialOutput);
-    ~Ramp();
-    void Tick();
+    Ramp(T Slope, unsigned StartRampSample, T InitialOutput);
+    void Tick() override;
 private:
+    const T m_Slope;
     unsigned m_Counter;
     const unsigned m_StartRampSample;
-    const T m_Slope;
 };
 
 }
@@ -32,9 +31,6 @@ SimuBlocks::Ramp<T>::Ramp( const T Slope,
     m_Counter = 0;
     this->m_Output = InitialOutput;
 };
-
-template<typename T>
-SimuBlocks::Ramp<T>::~Ramp() {};
 
 template <typename T>
 void SimuBlocks::Ramp<T>::Tick()

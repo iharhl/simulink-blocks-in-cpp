@@ -1,5 +1,5 @@
-#ifndef _STEP_H
-#define _STEP_H
+#ifndef STEP_H_
+#define STEP_H_
 
 #include "BasicBlock.h"
 
@@ -10,14 +10,13 @@ template <typename T>
 class Step : public BasicBlock<T>
 {
 public:
-    Step(const T InitValue, const T FinalValue, const unsigned StepSample);
-    ~Step();
-    void Tick();
+    Step(T InitValue, T FinalValue, unsigned StepSample);
+    void Tick() override;
 private:
-    unsigned m_Counter;
-    const unsigned m_StepSample;
     const T m_InitValue;
     const T m_FinalValue;
+    const unsigned m_StepSample;
+    unsigned m_Counter;
 };
 
 }
@@ -34,9 +33,6 @@ SimuBlocks::Step<T>::Step( const T InitValue,
     m_Counter = 0;
     this->m_Output = InitValue;
 };
-
-template<typename T>
-SimuBlocks::Step<T>::~Step() {}
 
 template<typename T>
 void SimuBlocks::Step<T>::Tick()
